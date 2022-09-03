@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, StyleSheet, Text, TextInput, View, ScrollView, FlatList } from 'react-native';
 
 export default function App() {
   const[enteredGoalText, setenteredGoalText] = React.useState('')
@@ -10,7 +10,7 @@ export default function App() {
   }
 
   const addGoalHandler = () => {
-    setCourseGoals(currentCourseGoals => [...currentCourseGoals, enteredGoalText])
+    setCourseGoals(currentCourseGoals => [...currentCourseGoals, {text: enteredGoalText, id: Math.random().toString()}])
     setenteredGoalText('')
   }
 
@@ -21,11 +21,17 @@ export default function App() {
       <Button title='Add Goal' onPress={addGoalHandler} />
      </View>
      <View style={styles.goalsContainer}>
-      {courseGoals.map((goal, index) => 
-      <View key={index} style={styles.goalItem}>
-        <Text style={styles.goalText}>{goal}</Text>
-      </View>
-      )}
+      <FlatList data={courseGoals} renderItem={(itemData) => {
+        return (
+          <View style={styles.goalItem}>
+            <Text style={styles.goalText}>{itemData.item.text}</Text>
+          </View>
+        )
+      }}
+      keyExtractor={(item, index) => {
+        return item.id
+      }}
+      />
      </View>
     </View>
   );
